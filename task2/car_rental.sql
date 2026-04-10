@@ -1,11 +1,12 @@
-CREATE TABLE RentalLocation (
+CREATE SCHEMA IF NOT EXISTS car_rental;
+CREATE TABLE IF NOT EXISTS RentalLocation (
     location_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     address TEXT NOT NULL,
     phone VARCHAR(20)
 );
 
-CREATE TABLE Customer (
+CREATE TABLE IF NOT EXISTS Customer (
     customer_id SERIAL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
@@ -14,13 +15,13 @@ CREATE TABLE Customer (
     license_number VARCHAR(50)
 );
 
-CREATE TABLE Service (
+CREATE TABLE IF NOT EXISTS Service (
     service_id SERIAL PRIMARY KEY,
     service_name VARCHAR(100) NOT NULL,
     price DECIMAL(10, 2) NOT NULL CHECK (price >= 0)
 );
 
-CREATE TABLE Vehicle (
+CREATE TABLE IF NOT EXISTS Vehicle (
     vehicle_id SERIAL PRIMARY KEY,
     location_id INT REFERENCES RentalLocation(location_id) ON DELETE SET NULL,
     brand VARCHAR(50) NOT NULL,
@@ -31,7 +32,7 @@ CREATE TABLE Vehicle (
     daily_rate DECIMAL(10, 2)
 );
 
-CREATE TABLE Staff (
+CREATE TABLE IF NOT EXISTS Staff (
     staff_id SERIAL PRIMARY KEY,
     location_id INT REFERENCES RentalLocation(location_id),
     first_name VARCHAR(50),
@@ -39,7 +40,7 @@ CREATE TABLE Staff (
     position VARCHAR(50)
 );
 
-CREATE TABLE Condition_Report (
+CREATE TABLE IF NOT EXISTS Condition_Report (
     report_id SERIAL PRIMARY KEY,
     vehicle_id INT REFERENCES Vehicle(vehicle_id) ON DELETE CASCADE,
     report_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -47,7 +48,7 @@ CREATE TABLE Condition_Report (
     description TEXT
 );
 
-CREATE TABLE Maintenance (
+CREATE TABLE IF NOT EXISTS Maintenance (
     maintenance_id SERIAL PRIMARY KEY,
     vehicle_id INT REFERENCES Vehicle(vehicle_id) ON DELETE CASCADE,
     maintenance_type VARCHAR(100),
@@ -56,7 +57,7 @@ CREATE TABLE Maintenance (
     cost DECIMAL(10, 2)
 );
 
-CREATE TABLE Reservation (
+CREATE TABLE IF NOT EXISTS Reservation (
     reservation_id SERIAL PRIMARY KEY,
     customer_id INT REFERENCES Customer(customer_id),
     vehicle_id INT REFERENCES Vehicle(vehicle_id),
@@ -68,7 +69,7 @@ CREATE TABLE Reservation (
     CHECK (end_date > start_date)
 );
 
-CREATE TABLE Payment (
+CREATE TABLE IF NOT EXISTS Payment (
     payment_id SERIAL PRIMARY KEY,
     reservation_id INT REFERENCES Reservation(reservation_id) ON DELETE CASCADE,
     amount DECIMAL(10, 2) NOT NULL,
@@ -76,7 +77,7 @@ CREATE TABLE Payment (
     payment_method VARCHAR(50) 
 );
 
-CREATE TABLE Return_Log (
+CREATE TABLE IF NOT EXISTS Return_Log (
     return_id SERIAL PRIMARY KEY,
     reservation_id INT REFERENCES Reservation(reservation_id),
     return_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -84,7 +85,7 @@ CREATE TABLE Return_Log (
     notes TEXT
 );
 
-CREATE TABLE Reservation_Service (
+CREATE TABLE IF NOT EXISTS Reservation_Service (
     reservation_id INT REFERENCES Reservation(reservation_id) ON DELETE CASCADE,
     service_id INT REFERENCES Service(service_id) ON DELETE CASCADE,
     quantity INT DEFAULT 1,
